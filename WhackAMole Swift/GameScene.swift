@@ -123,7 +123,7 @@ class GameScene: SKScene {
 //                }
                 score += 10
                 scoreLabel.text = "Score : \(score)"
-                mole.userData.setObject(0, forKey: "tappable")
+                mole.userData?.setObject(0, forKey: "tappable")
                 mole.removeAllActions()
                 var easeMoveDown:SKAction = SKAction.moveToY(mole.position.y - mole.size.height, duration: 0.2)
                 easeMoveDown.timingMode = SKActionTimingMode.EaseOut
@@ -174,11 +174,13 @@ class GameScene: SKScene {
         easeMoveDown.timingMode = SKActionTimingMode.EaseOut
         
         var setTappable:SKAction = SKAction.runBlock { () -> Void in
-            mole.userData.setObject(0, forKey: "tappable")
+            mole.userData?.setObject(0, forKey: "tappable")
+            return Void()
         }
         
         var unsetTappable:SKAction = SKAction.runBlock { () -> Void in
-            mole.userData.setObject(0, forKey: "tappable")
+            mole.userData?.setObject(0, forKey: "tappable")
+            return Void()
         }
         
         //var delay:SKAction = SKAction.waitForDuration(0.5)
