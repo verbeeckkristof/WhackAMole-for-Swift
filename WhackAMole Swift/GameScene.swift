@@ -80,14 +80,14 @@ class GameScene: SKScene {
             laughArray.addObject(SKTexture(imageNamed: "Laugh\(index)"))
         }
         
-        laughAnimation = SKAction.animateWithTextures(laughArray, timePerFrame: 0.2)
+        laughAnimation = SKAction.animateWithTextures(laughArray as [AnyObject], timePerFrame: 0.2)
         
         for index in 1...4 {
             println("Hit\(index)")
             hitArray.addObject(SKTexture(imageNamed: "Hit\(index)"))
         }
         
-        hitAnimation = SKAction.animateWithTextures(hitArray, timePerFrame: 0.2)
+        hitAnimation = SKAction.animateWithTextures(hitArray as [AnyObject], timePerFrame: 0.2)
         
         scoreLabel.text = "Score : 0"
         scoreLabel.name = "scoreLabel"
@@ -108,15 +108,14 @@ class GameScene: SKScene {
         backgroundMusicPlayer.prepareToPlay()
         backgroundMusicPlayer.play()
     }
-    
-    override func touchesBegan(touches: NSSet, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
         /* Called when a touch begins */
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
             var node:SKNode = nodeAtPoint(location)
             if (node.name == "Mole") {
-                var mole:SKSpriteNode = node as SKSpriteNode
+                var mole:SKSpriteNode = node as! SKSpriteNode
                 println("MOLE")
 //                if ((node.userData.objectForKey("tappable")?.boolValue) != nil) {
 //                    return
@@ -157,7 +156,7 @@ class GameScene: SKScene {
             if (arc4random() % 5 == 0) {
                 //println(mole.position.y)
                 if (mole.position.y == 130.0 as CGFloat) {
-                    popMole(mole as SKSpriteNode)
+                    popMole(mole as! SKSpriteNode)
                 }
             }
         }
