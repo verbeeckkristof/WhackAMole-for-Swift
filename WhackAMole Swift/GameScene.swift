@@ -28,29 +28,29 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         
         /* Setup your scene here */
-        var Dirt:SKSpriteNode = SKSpriteNode(imageNamed: "Dirt")
+        let Dirt:SKSpriteNode = SKSpriteNode(imageNamed: "Dirt")
         Dirt.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
         Dirt.name = "Dirt"
         Dirt.xScale = 2.0
         Dirt.yScale = 2.0
         self.addChild(Dirt)
         
-        var Lower:SKSpriteNode = SKSpriteNode(imageNamed: "GrassLow")
+        let Lower:SKSpriteNode = SKSpriteNode(imageNamed: "GrassLow")
         Lower.anchorPoint = CGPointMake(0.5, 1.0);
         Lower.name = "Lower"
         Lower.zPosition = 999
         Lower.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame));
         
-        var Upper:SKSpriteNode = SKSpriteNode(imageNamed: "GrassHigh")
+        let Upper:SKSpriteNode = SKSpriteNode(imageNamed: "GrassHigh")
         Upper.anchorPoint = CGPointMake(0.5, 0.0);
         Upper.name = "Upper"
         Upper.position = CGPointMake(CGRectGetMidX(self.frame), CGRectGetMidY(self.frame))
         
         self.addChild(Upper)
         
-        var moleCenter:Float = 240.0
+        let moleCenter:Float = 240.0
         
-        var mole1:SKSpriteNode = SKSpriteNode(imageNamed: "Mole")
+        let mole1:SKSpriteNode = SKSpriteNode(imageNamed: "Mole")
         mole1.anchorPoint = CGPointMake(0.8, 0.0)
         mole1.position = CGPointMake((CGRectGetMidX(self.frame) / 2), 130)
         mole1.name = "Mole"
@@ -58,7 +58,7 @@ class GameScene: SKScene {
         self.addChild(mole1)
         moles.addObject(mole1)
         
-        var mole2:SKSpriteNode = SKSpriteNode(imageNamed: "Mole")
+        let mole2:SKSpriteNode = SKSpriteNode(imageNamed: "Mole")
         mole2.anchorPoint = CGPointMake(0.5, 0.0)
         mole2.position = CGPointMake((CGRectGetMidX(self.frame)), 130)
         mole2.name = "Mole"
@@ -66,7 +66,7 @@ class GameScene: SKScene {
         self.addChild(mole2)
         moles.addObject(mole2)
         
-        var mole3:SKSpriteNode = SKSpriteNode(imageNamed: "Mole")
+        let mole3:SKSpriteNode = SKSpriteNode(imageNamed: "Mole")
         mole3.anchorPoint = CGPointMake(0.9, 0.0)
         mole3.position = CGPointMake((CGRectGetMaxX(self.frame)-(CGRectGetMidX(self.frame)/4)), 130)
         mole3.name = "Mole"
@@ -76,18 +76,18 @@ class GameScene: SKScene {
         
         self.addChild(Lower)
         for index in 1...3 {
-            println("Laugh\(index)")
+            print("Laugh\(index)")
             laughArray.addObject(SKTexture(imageNamed: "Laugh\(index)"))
         }
         
-        laughAnimation = SKAction.animateWithTextures(laughArray as [AnyObject], timePerFrame: 0.2)
+        laughAnimation = SKAction.animateWithTextures(laughArray as [AnyObject] as! [SKTexture], timePerFrame: 0.2)
         
         for index in 1...4 {
-            println("Hit\(index)")
+            print("Hit\(index)")
             hitArray.addObject(SKTexture(imageNamed: "Hit\(index)"))
         }
         
-        hitAnimation = SKAction.animateWithTextures(hitArray as [AnyObject], timePerFrame: 0.2)
+        hitAnimation = SKAction.animateWithTextures(hitArray as [AnyObject] as! [SKTexture], timePerFrame: 0.2)
         
         scoreLabel.text = "Score : 0"
         scoreLabel.name = "scoreLabel"
@@ -100,23 +100,28 @@ class GameScene: SKScene {
         laughSound = SKAction.playSoundFileNamed("laugh.caf", waitForCompletion: false)
         hitSound = SKAction.playSoundFileNamed("ow.caf", waitForCompletion: false)
         
-        var musicURL = NSBundle.mainBundle().URLForResource("whack", withExtension: "caf")
+        let musicURL = NSBundle.mainBundle().URLForResource("whack", withExtension: "caf")
         var error : NSError? = nil
-        backgroundMusicPlayer = AVAudioPlayer(contentsOfURL: musicURL, error: &error)
+        do {
+            backgroundMusicPlayer = try AVAudioPlayer(contentsOfURL: musicURL!)
+        } catch let error1 as NSError {
+            error = error1
+            //backgroundMusicPlayer = nil
+        }
         backgroundMusicPlayer.numberOfLoops = -1
         backgroundMusicPlayer.volume = 0.1
         backgroundMusicPlayer.prepareToPlay()
         backgroundMusicPlayer.play()
     }
-    override func touchesBegan(touches: Set<NSObject>, withEvent event: UIEvent) {
+    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         /* Called when a touch begins */
         
         for touch: AnyObject in touches {
             let location = touch.locationInNode(self)
-            var node:SKNode = nodeAtPoint(location)
+            let node:SKNode = nodeAtPoint(location)
             if (node.name == "Mole") {
-                var mole:SKSpriteNode = node as! SKSpriteNode
-                println("MOLE")
+                let mole:SKSpriteNode = node as! SKSpriteNode
+                print("MOLE")
 //                if ((node.userData.objectForKey("tappable")?.boolValue) != nil) {
 //                    return
 //                }
@@ -124,10 +129,10 @@ class GameScene: SKScene {
                 scoreLabel.text = "Score : \(score)"
                 mole.userData?.setObject(0, forKey: "tappable")
                 mole.removeAllActions()
-                var easeMoveDown:SKAction = SKAction.moveToY(mole.position.y - mole.size.height, duration: 0.2)
+                let easeMoveDown:SKAction = SKAction.moveToY(mole.position.y - mole.size.height, duration: 0.2)
                 easeMoveDown.timingMode = SKActionTimingMode.EaseOut
                 
-                var sequence:SKAction = SKAction.sequence([hitSound, hitAnimation, easeMoveDown])
+                let sequence:SKAction = SKAction.sequence([hitSound, hitAnimation, easeMoveDown])
                 mole.runAction(sequence)
             } else {
                 return
@@ -141,7 +146,7 @@ class GameScene: SKScene {
         if gameOver == true {return}
         
         if totalSpawns >= 50 {
-            var gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
+            let gameOverLabel = SKLabelNode(fontNamed: "Chalkduster")
             gameOverLabel.text = "Level Completed"
             gameOverLabel.name = "scoreLabel"
             gameOverLabel.fontSize = 70
@@ -167,23 +172,23 @@ class GameScene: SKScene {
         totalSpawns++
         mole.texture = SKTexture(imageNamed: "Mole")
         
-        var easeMoveUp:SKAction = SKAction.moveToY(mole.position.y + mole.size.height, duration: 0.2)
+        let easeMoveUp:SKAction = SKAction.moveToY(mole.position.y + mole.size.height, duration: 0.2)
         easeMoveUp.timingMode = SKActionTimingMode.EaseOut
-        var easeMoveDown:SKAction = SKAction.moveToY(mole.position.y, duration: 0.2)
+        let easeMoveDown:SKAction = SKAction.moveToY(mole.position.y, duration: 0.2)
         easeMoveDown.timingMode = SKActionTimingMode.EaseOut
         
-        var setTappable:SKAction = SKAction.runBlock { () -> Void in
+        let setTappable:SKAction = SKAction.runBlock { () -> Void in
             mole.userData?.setObject(0, forKey: "tappable")
             return Void()
         }
         
-        var unsetTappable:SKAction = SKAction.runBlock { () -> Void in
+        let unsetTappable:SKAction = SKAction.runBlock { () -> Void in
             mole.userData?.setObject(0, forKey: "tappable")
             return Void()
         }
         
         //var delay:SKAction = SKAction.waitForDuration(0.5)
-        var sequence:SKAction = SKAction.sequence([easeMoveUp, setTappable, laughSound, laughAnimation, unsetTappable, easeMoveDown])
+        let sequence:SKAction = SKAction.sequence([easeMoveUp, setTappable, laughSound, laughAnimation, unsetTappable, easeMoveDown])
         mole.runAction(sequence)
     }
 }
